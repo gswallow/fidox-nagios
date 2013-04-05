@@ -1,0 +1,14 @@
+{
+	"name": "jboss-nagios",
+	"version": "0.1.0",
+	"author": "Israel E. Bethencourt/FidoX (ieb@corecanarias.com)",
+	"description": "JMX query interface to jboss the output is nagios compatible",
+	"keywords": ["jboss", "nagios", "jmx"],
+	"dependencies": {
+		"node-commandline": "0.2.0",
+		"date-utils": "1.2.12"
+	},
+	"engines": {
+		"node": ">=0.6.0"
+	}
+}
