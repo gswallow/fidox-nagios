@@ -5,7 +5,8 @@
 	"description": "JMX query interface to jboss the output is nagios compatible",
 	"keywords": ["jboss", "nagios", "jmx"],
 	"dependencies": {
-		"node-commandline": "0.2.0",
+		"commander": "1.1.1",
+		"string": ">1",
 		"date-utils": "1.2.12"
 	},
 	"engines": {
