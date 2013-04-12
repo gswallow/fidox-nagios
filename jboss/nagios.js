@@ -11,26 +11,15 @@ TEXT_UNKNOWN = "UNKNOWN";
 CODE_UNKNOWN = 3;
 
 exports.report = function(message, value, perf) {
-	status = TEXT_OK;
-	exitCode = CODE_OK;
 
 	if(perf == undefined) {
 		sys.puts(util.format('JBossMBean %s: %s', status, message, value));
 	} else {
 		perf = normalizePerf(perf);
-		var critRange = parseRangeString(perf.crit);
-		var warnRange = parseRangeString(perf.warn);
-		if(rangeCheck(critRange, value)) {
-			status = TEXT_CRITICAL;
-			exitCode = CODE_CRITICAL;
-		} else if(rangeCheck(warnRange, value)) {
-			exitCode = CODE_WARGING;
-			status = TEXT_WARNING;
-		}
-
-		sys.puts(util.format('JBossMBean %s: %s %s | %s=%s%s;%s;%s;%s;%s', status, message, value, perf.label, perf.value, perf.uom, perf.warn, perf.crit, perf.min, perf.max));
+		var status = getStatus(perf);
+		sys.puts(util.format('JBossMBean %s: %s %s | %s=%s%s;%s;%s;%s;%s', status.text, message, value, perf.label, perf.value, perf.uom, perf.warn, perf.crit, perf.min, perf.max));
 	}
-	process.exit(exitCode);
+	process.exit(status.exitCode);
 }
 
 function normalizePerf(perf) {
@@ -50,6 +39,32 @@ function normalizePerf(perf) {
 		perf.max = '';
 	}
 	return perf;
+}
+
+function getStatus(perf) {
+	res = {
+		text: TEXT_OK,
+		exitCode: CODE_OK
+	};
+	if(perf.crit != '') {
+		var critRange = parseRangeString(perf.crit);
+		if(rangeCheck(critRange, perf.value)) {
+			res.text = TEXT_CRITICAL;
+			res.exitCode = CODE_CRITICAL;
+			return res;
+		}
+	}
+	if(perf.warn != '') {
+		var warnRange = parseRangeString(perf.warn);
+		console.log(warnRange);
+		console.log(rangeCheck(warnRange, perf.value));
+		if(rangeCheck(warnRange, perf.value)) {
+			res.text = TEXT_WARNING;
+			res.exitCode = CODE_WARGING;
+			return res;
+		}
+	}
+	return res;
 }
 
 /*
@@ -124,7 +139,7 @@ function parseRangeString(t) {
 
 function rangeCheck(range, v) {
     var alerty = false || ! range.alert_on_outside;
-
+	v = v*1;
     if (range.start <= v && v <= range.end) {
 		return alerty;
     } else {

@@ -27,7 +27,7 @@ exports.memory = function(s, name) {
 		value: data.used,
 		uom: 'B',
 		max: data.max,
-		warn: '@10:20'
+		crit: '129349704'
 	};
 	nagios.report(name, data.used, perf);
 }
