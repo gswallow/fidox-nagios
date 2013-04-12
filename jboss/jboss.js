@@ -3,8 +3,8 @@ var nagios = require('./nagios')
 var S = require('string');
 var nagios = require('./nagios')
 
-exports.raw = function(s) {
-	return s.trim();
+exports.raw = function(s, name, warn, crit) {
+	nagios.report(name, s.trim());
 }
 
 exports.elapsedTime = function(s) {

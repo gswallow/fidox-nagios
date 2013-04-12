@@ -11,9 +11,12 @@ TEXT_UNKNOWN = "UNKNOWN";
 CODE_UNKNOWN = 3;
 
 exports.report = function(message, value, perf) {
-
+	var status = {
+		text: TEXT_OK,
+		exitCode: CODE_OK
+	};
 	if(perf == undefined) {
-		sys.puts(util.format('JBossMBean %s: %s', status, message, value));
+		sys.puts(util.format('JBossMBean %s: %s', status.text, message, value));
 	} else {
 		perf = normalizePerf(perf);
 		var status = getStatus(perf);
