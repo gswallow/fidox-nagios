@@ -56,8 +56,6 @@ function getStatus(perf) {
 	}
 	if(perf.warn != '') {
 		var warnRange = parseRangeString(perf.warn);
-		console.log(warnRange);
-		console.log(rangeCheck(warnRange, perf.value));
 		if(rangeCheck(warnRange, perf.value)) {
 			res.text = TEXT_WARNING;
 			res.exitCode = CODE_WARGING;

@@ -10,8 +10,8 @@ program
   .option('-u, --user <user>', 'The username')
   .option('-p, --password <password>', 'The password')
   .option('-n, --name <name>', 'Nagios name')
-  .option('-w, --warning <range>', 'Nagios warning range')
-  .option('-c, --critical <range>', 'Nagios critical range')
+  .option('-w, --warning <warning>', 'Nagios warning range')
+  .option('-c, --critical <critical>', 'Nagios critical range')
   .option('-t, --type <type>', 'Data type. elapsedTime: If data returned is datetime display the seconds elapsed')
 
 program.command('*')
@@ -27,6 +27,6 @@ function runCommand(cmd) {
 	};
 	twiddle.invoke(cmd, params, function(data) {
 		var processor = jboss[program.type];
-		processor(data, program.name);
+		processor(data, program.name, program.warning, program.critical);
 	});
 }

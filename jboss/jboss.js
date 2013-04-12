@@ -13,7 +13,7 @@ exports.elapsedTime = function(s) {
 	return now.getSecondsBetween(d);
 }
 
-exports.memory = function(s, name) {
+exports.memory = function(s, name, warn, crit) {
 	var res = s.substring(s.indexOf('contents=') + 10	, s.length -3);
 	res = S(res).replaceAll(",", "").s;
 	var data = {};
@@ -27,7 +27,8 @@ exports.memory = function(s, name) {
 		value: data.used,
 		uom: 'B',
 		max: data.max,
-		crit: '129349704'
+		crit: crit,
+		warn: warn
 	};
 	nagios.report(name, data.used, perf);
 }
