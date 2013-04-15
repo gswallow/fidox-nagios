@@ -27,7 +27,7 @@ exports.report = function(message, value, perf) {
 
 function normalizePerf(perf) {
 	if(perf.uom == undefined) {
-		perf.uom = 'c';
+		perf.uom = '';
 	}
 	if(perf.warn == undefined) {
 		perf.warn = '';
