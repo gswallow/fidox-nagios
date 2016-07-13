@@ -40,6 +40,12 @@ Options:
     Check specified S3 bucket by URI
  -t, --timeout=INTEGER
     Seconds before connection times out (default: 10)
+ -a, --access-key=STRING
+    AWS Access Key ID
+ -k, --secret-key=STRING
+    AWS Secret Access Key
+ -r, --region=STRING
+    AWS Region (e.g. us-east-1)
 """
 
 __version__ = '0.2'
@@ -50,6 +56,7 @@ import getopt
 import signal
 import math
 import string
+import shlex
 from subprocess import Popen, PIPE
 
 program = sys.argv[0]
@@ -130,8 +137,8 @@ def output(code, msg=''):
 
 def parseargs():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'b:t:w:c:s:Vh',
-                                           ['bucket', "warning", "critical", "settings", 'timeout', 'version', 'help'])
+        opts, args = getopt.getopt(sys.argv[1:], 'b:t:w:c:s:a:k:r:Vh',
+            ['bucket', 'timeout', 'warning', 'critical', 'settings', 'access-key', 'secret-key', 'region', 'version', 'help'])
     except getopt.error, msg:
         usage(OK, msg)
 
@@ -141,6 +148,9 @@ def parseargs():
         warning = ''
         critical = ''
         settings = ''
+        accesskey = ''
+        secretkey = ''
+        region = ''
 
     options = Options()
 
@@ -158,7 +168,13 @@ def parseargs():
         elif opt in ('-t', '--timeout'):
             options.timeout = int(arg)
         elif opt in ('-s', '--settings'):
-            options.settings = "-c" + arg
+            options.settings = "--config=" + arg
+        elif opt in ('-a', '--access-key'):
+            options.accesskey = '--access_key=' + arg
+        elif opt in ('-k', '--secret-key'):
+            options.secretkey = '--secret_key=' + arg
+        elif opt in ('-r', '--region'):
+            options.region = '--region=' + arg
         else:
             assert False, (opt, arg)
 
@@ -184,7 +200,15 @@ def main():
             settings = ''
             if options.settings != '':
                 settings = options.settings
-            p1 = Popen([S3CMD, settings, DU, options.bucket], stdout=PIPE)
+            if options.accesskey != '':
+                accesskey = options.accesskey
+            if options.secretkey != '':
+                secretkey = options.secretkey
+            if options.region != '':
+                region = options.region
+            cmdline = string.join([S3CMD, settings, accesskey, secretkey, region, DU, options.bucket])
+            args = shlex.split(cmdline)
+            p1 = Popen(args, stdout=PIPE)
             out, err = p1.communicate()
             retcode = p1.wait()
         except:
